@@ -1,0 +1,26 @@
+// Ajustes finos sobre NG Zorro para que los inputs queden alineados y
+// el formulario tenga espacio cómodo para respirar.
+
+:host {
+  display: block;
+}
+
+// Asegura que los inputs-number ocupen todo el ancho disponible
+::ng-deep .ant-input-number {
+  width: 100%;
+}
+
+// Labels con el color principal para darle cohesión al branding
+::ng-deep .ant-form-item-label > label {
+  font-weight: 500;
+  color: #334155;
+}
+
+// Los inputs en focus adoptan el azul Lumen
+::ng-deep .ant-input:focus,
+::ng-deep .ant-input-focused,
+::ng-deep .ant-input-number-focused,
+::ng-deep .ant-select-focused .ant-select-selector {
+  border-color: #0ea5e9 !important;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2) !important;
+}

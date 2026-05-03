@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+// La tabla respira mejor con un padding ligero en celdas
+::ng-deep .ant-table-tbody > tr > td {
+  padding: 12px 16px;
+}
+
+::ng-deep .ant-table-thead > tr > th {
+  background-color: #f8fafc !important;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+// Los account IDs son largos — evitamos wrap feo
+code {
+  white-space: nowrap;
+  font-size: 0.75rem;
+}

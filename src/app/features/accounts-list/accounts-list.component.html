@@ -1,0 +1,79 @@
+<div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+  <div>
+    <h2 class="text-xl font-bold text-lumen-primary m-0">Cuentas de préstamo</h2>
+    <p class="text-sm text-gray-500 m-0 mt-1">
+      {{ accounts().length }} cuenta{{ accounts().length === 1 ? '' : 's' }} creada{{ accounts().length === 1 ? '' : 's' }} en Vault Core
+    </p>
+  </div>
+
+  <button
+    nz-button
+    nzType="default"
+    (click)="loadAccounts()"
+    [nzLoading]="loading()">
+    <span nz-icon nzType="reload" nzTheme="outline"></span>
+    Refrescar
+  </button>
+</div>
+
+<!-- Estado de error -->
+@if (error(); as e) {
+  <div class="lumen-card border-l-4 border-l-[#dc2626] mb-4">
+    <p class="text-lumen-danger m-0">{{ e }}</p>
+  </div>
+}
+
+<!-- Estado vacío -->
+@if (!loading() && !error() && accounts().length === 0) {
+  <nz-empty
+    nzNotFoundImage="simple"
+    nzNotFoundContent="Aún no se han aprobado créditos">
+  </nz-empty>
+}
+
+<!-- Tabla de cuentas -->
+@if (accounts().length > 0) {
+  <nz-table
+    #accountsTable
+    [nzData]="accounts()"
+    [nzPageSize]="10"
+    [nzShowSizeChanger]="true"
+    [nzPageSizeOptions]="[5, 10, 20]"
+    nzSize="middle"
+    [nzBordered]="false">
+    <thead>
+      <tr>
+        <th>Account ID</th>
+        <th>Cliente (cédula)</th>
+        <th nzAlign="right">Monto</th>
+        <th nzAlign="right">Tasa EA</th>
+        <th nzAlign="center">Plazo</th>
+        <th nzAlign="center">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (acc of accountsTable.data; track acc.id) {
+        <tr>
+          <td>
+            <code class="text-xs font-mono text-lumen-primary">{{ acc.id }}</code>
+          </td>
+          <td>
+            <span class="font-medium">{{ acc.stakeholder_ids[0] || '—' }}</span>
+          </td>
+          <td class="text-right font-semibold">
+            {{ getPrincipal(acc) | currency:'COP':'symbol-narrow':'1.0-0':'es-CO' }}
+          </td>
+          <td class="text-right">
+            {{ getRate(acc) | percent:'1.2-2' }}
+          </td>
+          <td class="text-center">
+            {{ getParam(acc, 'loan_term_months') }} meses
+          </td>
+          <td class="text-center">
+            <nz-tag [nzColor]="tagColor(acc.status)">{{ statusLabel(acc.status) }}</nz-tag>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+}

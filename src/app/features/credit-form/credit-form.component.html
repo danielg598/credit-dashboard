@@ -1,0 +1,175 @@
+<form nz-form [formGroup]="form" (ngSubmit)="onSubmit()" nzLayout="vertical">
+
+  <!-- Encabezado con título + botones de ejemplo -->
+  <div class="flex items-start justify-between mb-4 flex-wrap gap-2">
+    <div>
+      <h2 class="text-xl font-bold text-lumen-primary m-0">Nueva solicitud de crédito</h2>
+      <p class="text-sm text-gray-500 m-0 mt-1">
+        Completa los datos del solicitante para evaluar su perfil.
+      </p>
+    </div>
+
+    <div class="flex gap-2">
+      <button type="button" nz-button nzSize="small" nzType="default" (click)="cargarEjemplo('aprobable')">
+        Ejemplo aprobable
+      </button>
+      <button type="button" nz-button nzSize="small" nzType="default" (click)="cargarEjemplo('rechazable')">
+        Ejemplo rechazable
+      </button>
+    </div>
+  </div>
+
+  <nz-divider class="!my-4"></nz-divider>
+
+  <!-- Fila 1: nombre + cédula -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="nombre">Nombre completo</nz-form-label>
+      <nz-form-control [nzErrorTip]="nombreError">
+        <input nz-input id="nombre" formControlName="nombre" placeholder="Ej: María Pérez" autocomplete="off" />
+        <ng-template #nombreError let-control>
+          @if (control) {
+          @if (control.hasError('required')) {
+          <span>El nombre es obligatorio</span>
+          } @else if (control.hasError('minlength')) {
+          <span>Mínimo 2 caracteres</span>
+          } @else if (control.hasError('maxlength')) {
+          <span>Máximo 100 caracteres</span>
+          }
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="cedula">Cédula</nz-form-label>
+      <nz-form-control [nzErrorTip]="cedulaError">
+        <input nz-input id="cedula" formControlName="cedula" placeholder="1023456789" maxlength="10"
+          autocomplete="off" />
+        <ng-template #cedulaError let-control>
+          @if (control) {
+          @if (control.hasError('required')) {
+          <span>La cédula es obligatoria</span>
+          } @else if (control.hasError('pattern')) {
+          <span>Debe tener entre 6 y 10 dígitos</span>
+          }
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <!-- Fila 2: edad + ingresos -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="edad">Edad</nz-form-label>
+      <nz-form-control [nzErrorTip]="edadError">
+        <nz-input-number id="edad" formControlName="edad" [nzMin]="18" [nzMax]="75" [nzStep]="1"
+          class="!w-full"></nz-input-number>
+        <ng-template #edadError let-control>
+          @if (control) {
+          @if (control.hasError('required')) {
+          <span>La edad es obligatoria</span>
+          } @else if (control.hasError('min') || control.hasError('max')) {
+          <span>Debe estar entre 18 y 75 años</span>
+          }
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="ingresos">Ingresos mensuales (COP)</nz-form-label>
+      <nz-form-control [nzErrorTip]="ingresosError">
+        <nz-input-number id="ingresos" formControlName="ingresosMensuales" [nzMin]="1000000" [nzStep]="100000"
+          [nzFormatter]="formatterCurrency" [nzParser]="parserCurrency" class="!w-full">
+        </nz-input-number>
+        <ng-template #ingresosError let-control>
+          @if (control) {
+          @if (control.hasError('required')) {
+          <span>Los ingresos son obligatorios</span>
+          } @else if (control.hasError('min')) {
+          <span>Ingresos mínimos: $1.000.000</span>
+          }
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <!-- Fila 3: monto + plazo -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="monto">Monto solicitado (COP)</nz-form-label>
+      <nz-form-control [nzErrorTip]="montoError">
+        <nz-input-number id="monto" formControlName="montoSolicitado" [nzMin]="500000" [nzMax]="100000000"
+          [nzStep]="500000" [nzFormatter]="formatterCurrency" [nzParser]="parserCurrency" class="!w-full">
+        </nz-input-number>
+        <ng-template #montoError let-control>
+          @if (control) {
+          @if (control.hasError('required')) {
+          <span>El monto es obligatorio</span>
+          } @else if (control.hasError('min')) {
+          <span>Mínimo $500.000</span>
+          } @else if (control.hasError('max')) {
+          <span>Máximo $100.000.000</span>
+          }
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="plazo">Plazo (meses)</nz-form-label>
+      <nz-form-control [nzErrorTip]="plazoError">
+        <nz-input-number id="plazo" formControlName="plazoMeses" [nzMin]="6" [nzMax]="120" [nzStep]="6"
+          class="!w-full"></nz-input-number>
+        <ng-template #plazoError let-control>
+          @if (control) {
+          @if (control.hasError('required')) {
+          <span>El plazo es obligatorio</span>
+          } @else if (control.hasError('min') || control.hasError('max')) {
+          <span>Entre 6 y 120 meses</span>
+          }
+          }
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <!-- Fila 4: historial + propósito -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="historial">Historial crediticio</nz-form-label>
+      <nz-form-control nzErrorTip="Selecciona una opción">
+        <nz-select id="historial" formControlName="historialCrediticio" nzPlaceHolder="Selecciona...">
+          @for (opt of historialOptions; track opt.value) {
+          <nz-option [nzValue]="opt.value" [nzLabel]="opt.label"></nz-option>
+          }
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="proposito">Propósito del préstamo</nz-form-label>
+      <nz-form-control nzErrorTip="Selecciona una opción">
+        <nz-select id="proposito" formControlName="propositoPrestamo" nzPlaceHolder="Selecciona...">
+          @for (opt of propositoOptions; track opt.value) {
+          <nz-option [nzValue]="opt.value" [nzLabel]="opt.label"></nz-option>
+          }
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <!-- Error banner global -->
+  @if (errorMessage(); as err) {
+  <nz-alert nzType="error" [nzMessage]="err" nzShowIcon class="mt-2 mb-4"></nz-alert>
+  }
+
+  <!-- Botón submit -->
+  <button nz-button nzType="primary" nzSize="large" type="submit" [nzLoading]="loading()" [disabled]="loading()"
+    class="w-full mt-2">
+    {{ loading() ? 'Evaluando solicitud...' : 'Evaluar solicitud' }}
+  </button>
+</form>
